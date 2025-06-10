@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import Header from "./header";
 
 const SubmitInvoice = () => {
   const navigate = useNavigate();
@@ -143,6 +144,8 @@ const SubmitInvoice = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8fafc] to-[#e2e8f0]">
+      <Header activePage="dashboard" />
+
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
           <h1 className="text-3xl font-bold font-montserrat text-[#1e293b] mb-6 text-center">
