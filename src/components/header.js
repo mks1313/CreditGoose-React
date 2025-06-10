@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const NAV_LINKS = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Submit Invoice", href: "/submit-invoice" },
+  { name: "Auto Funding", href: "/auto-funding-settings" },
 ];
 
 const Header = ({ activePage = "dashboard" }) => {

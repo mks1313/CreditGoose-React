@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import Header from "./header";
 
 const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
@@ -60,7 +61,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8fafc] to-[#e2e8f0]">
-      {/* <Header activePage="dashboard" /> */}
+      <Header activePage="dashboard" />
 
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold font-montserrat text-[#1e293b] mb-8">
