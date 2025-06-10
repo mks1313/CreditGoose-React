@@ -19,10 +19,9 @@ const Dashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/invoices/list", {
-        method: "POST",
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/invoices/invoices`, {
+        method: "GET",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
       });
 
       if (!response.ok) {

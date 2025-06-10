@@ -31,7 +31,7 @@ const SubmitInvoice = () => {
     setError(null);
 
     try {
-      // const response = await fetch("/api/invoices/submit", {
+      // const response = await fetch(`${process.env.REACT_APP_API_URL}/invoices/submit`, {
       //   method: "POST",
       //   headers: {
       //     "Content-Type": "application/json",
