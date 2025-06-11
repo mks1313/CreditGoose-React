@@ -38,7 +38,7 @@ export default function AutoFundingSettings() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/settings/auto-funding", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/invoices/auto-funding`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
