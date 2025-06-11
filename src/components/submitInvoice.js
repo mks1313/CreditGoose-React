@@ -31,13 +31,14 @@ const SubmitInvoice = () => {
     setError(null);
 
     try {
-       const response = await fetch(`${process.env.REACT_APP_API_URL}/invoices/submit`, {
-         method: "POST",
-         headers: {
-           "Content-Type": "application/json",
-         },
-         body: JSON.stringify(formData),
-       });
+      // TODO: Maxim
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/invoices/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
        const data = await response.json();
 
@@ -47,21 +48,6 @@ const SubmitInvoice = () => {
 
       setSubmittedInvoice(data.invoice);
       setSuccess(true);
-
-      // Simulate network delay
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Mock response
-      //const mockInvoice = {
-      //  invoice_id: "12345",
-      //  status: "approved",
-      //  credit_score: Math.floor(Math.random() * 1000),
-      //  advance_rate: 85,
-      //  funded_amount: parseFloat(formData.amount) * 0.85,
-      //};
-
-      //setSubmittedInvoice(mockInvoice);
-      //setSuccess(true);
     } catch (err) {
       setError(err.message || "Failed to submit invoice. Please try again.");
       console.error("Submission error:", err);

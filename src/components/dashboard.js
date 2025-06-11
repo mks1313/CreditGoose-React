@@ -22,65 +22,28 @@ const Dashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      //   const response = await fetch(
-      //     `${process.env.REACT_APP_API_URL}/invoices/invoices`,
-      //     {
-      //       method: "GET",
-      //       headers: { "Content-Type": "application/json" },
-      //     }
-      //   );
-
-      //   if (!response.ok) {
-      //     throw new Error("Failed to fetch invoices");
-      //   }
-
-      //   const data = await response.json();
-      //   setInvoices(data.invoices);
-      //   setStats(data.stats);
-
-      const mockData = {
-        invoices: [
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/invoices/invoices`,
           {
-            id: "INV-001",
-            merchant_id: "QuantumLeap Software",
-            amount: 2500,
-            issue_date: "2025-05-01",
-            due_date: "2025-05-10",
-            fee: "3%",
-            status: "approved",
-          },
-          {
-            id: "INV-002",
-            merchant_id: "NeonGrid Systems",
-            amount: 1200,
-            issue_date: "2025-05-03",
-            due_date: "2025-05-15",
-            fee: "3%",
-            status: "pending",
-          },
-          {
-            id: "INV-003",
-            merchant_id: "Cogent Dynamics",
-            amount: 8000,
-            issue_date: "2025-04-20",
-            due_date: "2025-05-20",
-            fee: "2.5%",
-            status: "repaid",
-          },
-        ],
-        stats: {
-          total_count: 3,
-          total_amount: 11700,
-          total_funded_amount: 8000,
-        },
-      };
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch invoices");
+        }
+
+        const data = await response.json();
+        setInvoices(data.invoices);
+        setStats(data.stats);
 
       const filtered = status
-        ? mockData.invoices.filter((inv) => inv.status === status)
-        : mockData.invoices;
+        ? data.invoices.filter((inv) => inv.status === status)
+        : data.invoices;
 
       setInvoices(filtered);
-      setStats(mockData.stats);
+      setStats(data.stats);
     } catch (err) {
       console.error("Fetch error:", err);
     } finally {
