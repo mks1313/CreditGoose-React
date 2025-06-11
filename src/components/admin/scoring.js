@@ -71,6 +71,17 @@ const Scoring = () => {
       .catch(err => console.error('Failed to save:', err));
   };
 
+  const runGoose = () => {
+    fetch(`${process.env.REACT_APP_API_URL}/admin/goose`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ goose_prompts: listB }),
+    })
+      .then(res => res.json())
+      .then(data => console.log('Goose answer:', data))
+      .catch(err => console.error('Failed to run Goose:', err));
+  };
+
   return (
     <div style={{ padding: 24 }}>
       <h2>Scoring Admin</h2>
@@ -80,6 +91,9 @@ const Scoring = () => {
       </div>
       <button onClick={saveChanges} style={{ marginTop: 24 }}>
         Save & Test
+      </button>
+      <button onClick={runGoose} style={{ marginTop: 24 , marginLeft: 100}}>
+        Only Goose
       </button>
     </div>
   );
