@@ -13,26 +13,75 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchInvoices = async (status = "") => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/invoices/invoices`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      //   const response = await fetch(
+      //     `${process.env.REACT_APP_API_URL}/invoices/invoices`,
+      //     {
+      //       method: "GET",
+      //       headers: { "Content-Type": "application/json" },
+      //     }
+      //   );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch invoices");
-      }
+      //   if (!response.ok) {
+      //     throw new Error("Failed to fetch invoices");
+      //   }
 
-      const data = await response.json();
-      setInvoices(data.invoices);
-      setStats(data.stats);
+      //   const data = await response.json();
+      //   setInvoices(data.invoices);
+      //   setStats(data.stats);
+
+      const mockData = {
+        invoices: [
+          {
+            id: "INV-001",
+            merchant_id: "QuantumLeap Software",
+            amount: 2500,
+            issue_date: "2025-05-01",
+            due_date: "2025-05-10",
+            fee: "3%",
+            status: "approved",
+          },
+          {
+            id: "INV-002",
+            merchant_id: "NeonGrid Systems",
+            amount: 1200,
+            issue_date: "2025-05-03",
+            due_date: "2025-05-15",
+            fee: "3%",
+            status: "pending",
+          },
+          {
+            id: "INV-003",
+            merchant_id: "Cogent Dynamics",
+            amount: 8000,
+            issue_date: "2025-04-20",
+            due_date: "2025-05-20",
+            fee: "2.5%",
+            status: "repaid",
+          },
+        ],
+        stats: {
+          total_count: 3,
+          total_amount: 11700,
+          total_funded_amount: 8000,
+        },
+      };
+
+      const filtered = status
+        ? mockData.invoices.filter((inv) => inv.status === status)
+        : mockData.invoices;
+
+      setInvoices(filtered);
+      setStats(mockData.stats);
     } catch (err) {
-      setError("Failed to load invoices. Please try again.");
       console.error("Fetch error:", err);
     } finally {
       setLoading(false);
@@ -62,6 +111,13 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#f8fafc] to-[#e2e8f0]">
       <Header activePage="dashboard" />
 
+      {showConfirmation && selectedInvoice && (
+        <ConfirmationModal
+          invoice={selectedInvoice}
+          onClose={() => setShowConfirmation(false)}
+        />
+      )}
+
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold font-montserrat text-[#1e293b] mb-8">
           Invoice Dashboard
@@ -87,6 +143,8 @@ const Dashboard = () => {
             formatCurrency={formatCurrency}
             formatDate={formatDate}
             onViewInvoice={handleViewInvoice}
+            setSelectedInvoice={setSelectedInvoice}
+            setShowConfirmation={setShowConfirmation}
           />
         </div>
       </div>
@@ -133,6 +191,8 @@ const InvoiceTable = ({
   formatCurrency,
   formatDate,
   onViewInvoice,
+  setSelectedInvoice,
+  setShowConfirmation,
 }) => {
   if (loading) {
     return <LoadingSpinner />;
@@ -146,6 +206,11 @@ const InvoiceTable = ({
     return <NoInvoicesMessage />;
   }
 
+  const handleInvoiceSelect = (invoice) => {
+    setSelectedInvoice(invoice);
+    setShowConfirmation(true);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -157,6 +222,7 @@ const InvoiceTable = ({
             <TableHeader>Issue Date</TableHeader>
             <TableHeader>Due Date</TableHeader>
             <TableHeader>Status</TableHeader>
+            <TableHeader>Fee</TableHeader>
             <TableHeader>Actions</TableHeader>
           </tr>
         </thead>
@@ -164,6 +230,7 @@ const InvoiceTable = ({
           {invoices.map((invoice) => (
             <InvoiceRow
               key={invoice.id}
+              handleInvoiceSelect={handleInvoiceSelect}
               invoice={invoice}
               formatCurrency={formatCurrency}
               formatDate={formatDate}
@@ -182,7 +249,13 @@ const TableHeader = ({ children }) => (
   </th>
 );
 
-const InvoiceRow = ({ invoice, formatCurrency, formatDate, onViewInvoice }) => (
+const InvoiceRow = ({
+  invoice,
+  formatCurrency,
+  formatDate,
+  onViewInvoice,
+  handleInvoiceSelect,
+}) => (
   <tr className="border-b border-[#e2e8f0] hover:bg-[#f8fafc]">
     <td className="py-4 px-4">{invoice.id}</td>
     <td className="py-4 px-4">{invoice.merchant_id}</td>
@@ -192,8 +265,16 @@ const InvoiceRow = ({ invoice, formatCurrency, formatDate, onViewInvoice }) => (
     <td className="py-4 px-4">
       <StatusBadge status={invoice.status} />
     </td>
+    <td className="py-4 px-4">{invoice.fee}</td>
+
     <td className="py-4 px-4">
-      <ViewButton onClick={() => onViewInvoice(invoice.id)} />
+      <button
+        onClick={() => handleInvoiceSelect(invoice)}
+        className="w-full mt-4 px-4 py-2 bg-[#3b82f6] text-white rounded-lg hover:bg-[#2563eb] transition duration-300 flex items-center justify-center"
+      >
+        <i className="fas fa-money-bill-wave mr-2"></i>
+        Get Financing
+      </button>
     </td>
   </tr>
 );
@@ -258,7 +339,35 @@ InvoiceRow.propTypes = {
   invoice: PropTypes.object.isRequired,
   formatCurrency: PropTypes.func.isRequired,
   formatDate: PropTypes.func.isRequired,
+  fee: PropTypes.string,
   onViewInvoice: PropTypes.func.isRequired,
 };
+
+const ConfirmationModal = ({ invoice, onClose }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-auto">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-[#059669] rounded-full flex items-center justify-center mx-auto mb-4">
+          <i className="fas fa-check text-white text-2xl"></i>
+        </div>
+        <h3 className="text-2xl font-bold text-[#1e293b] mb-2">
+          Financing Approved!
+        </h3>
+        <p className="text-[#475569] mb-6">
+          Your invoice for {invoice.amount} has been approved for financing at{" "}
+          {invoice.advance_rate}% advance rate.
+        </p>
+        <div className="space-y-4">
+          <button
+            onClick={onClose}
+            className="w-full px-6 py-3 bg-[#3b82f6] text-white rounded-lg hover:bg-[#2563eb] transition duration-300"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default Dashboard;

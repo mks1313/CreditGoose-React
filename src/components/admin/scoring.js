@@ -1,45 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import Header from "../header";
 
 const ListEditor = ({ title, items, setItems }) => {
-  const [newPrompt, setNewPrompt] = useState('');
+  const [newPrompt, setNewPrompt] = useState("");
 
   const addPrompt = () => {
-    if (newPrompt.trim() === '') return;
+    if (newPrompt.trim() === "") return;
     setItems([...items, { text: newPrompt, active: false }]);
-    setNewPrompt('');
+    setNewPrompt("");
   };
 
   const toggleActive = (index) => {
-    setItems(items.map((item, i) => ({
-      ...item,
-      active: i === index,
-    })));
+    setItems(
+      items.map((item, i) => ({
+        ...item,
+        active: i === index,
+      }))
+    );
   };
 
   return (
-    <div style={{ flex: 1, margin: '0 16px' }}>
-      <h3>{title}</h3>
-      <ul>
+    <div className="flex-1 mx-4 bg-[#f8fafc] rounded-lg p-6 shadow">
+      <h3 className="text-xl font-semibold text-[#1e293b] mb-4">{title}</h3>
+      <ul className="space-y-2 mb-4">
         {items.map((item, idx) => (
           <li key={idx}>
-            <label>
+            <label className="flex items-center gap-2">
               <input
                 type="radio"
                 checked={item.active}
                 onChange={() => toggleActive(idx)}
+                className="accent-[#3b82f6]"
               />
-              {item.text}
+              <span className="text-[#475569]">{item.text}</span>
             </label>
           </li>
         ))}
       </ul>
-      <input
-        type="text"
-        value={newPrompt}
-        onChange={(e) => setNewPrompt(e.target.value)}
-        placeholder="Enter prompt"
-      />
-      <button onClick={addPrompt}>Add</button>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={newPrompt}
+          onChange={(e) => setNewPrompt(e.target.value)}
+          placeholder="Enter prompt"
+          className="flex-1 px-3 py-2 border border-[#e2e8f0] rounded-lg focus:ring-2 focus:ring-[#3b82f6] focus:outline-none"
+        />
+        <button
+          onClick={addPrompt}
+          className="px-4 py-2 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded-lg font-semibold transition"
+        >
+          Add
+        </button>
+      </div>
     </div>
   );
 };
@@ -47,54 +59,97 @@ const ListEditor = ({ title, items, setItems }) => {
 const Scoring = () => {
   const [listA, setListA] = useState([]);
   const [listB, setListB] = useState([]);
-
-  const userId = 'UUU-000-000-000';
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/admin/scoring`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setListA(data.web_searches || []);
         setListB(data.goose_prompts || []);
       })
-      .catch(err => console.error('Failed to fetch prompts:', err));
+      .catch((err) => setError("Failed to fetch prompts."));
   }, []);
 
   const saveChanges = () => {
+    setError(null);
+    setSuccess(false);
     fetch(`${process.env.REACT_APP_API_URL}/admin/scoring`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ web_searches: listA, goose_prompts: listB }),
     })
-      .then(res => res.json())
-      .then(data => console.log('Test results:', data))
-      .catch(err => console.error('Failed to save:', err));
+      .then((res) => res.json())
+      .then(() => {
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 2000);
+      })
+      .catch(() => setError("Failed to save."));
   };
 
   const runGoose = () => {
+    setError(null);
     fetch(`${process.env.REACT_APP_API_URL}/admin/goose`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ goose_prompts: listB }),
     })
-      .then(res => res.json())
-      .then(data => console.log('Goose answer:', data))
-      .catch(err => console.error('Failed to run Goose:', err));
+      .then((res) => res.json())
+      .then(() => setSuccess(true))
+      .catch(() => setError("Failed to run Goose."));
   };
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>Scoring Admin</h2>
-      <div style={{ display: 'flex' }}>
-        <ListEditor title="Web Search" items={listA} setItems={setListA} />
-        <ListEditor title="Goose Prompt" items={listB} setItems={setListB} />
+    <div>
+      <Header activePage="scoring" className="mt-20" />
+      <div className="min-h-screen bg-gradient-to-b from-[#f8fafc] to-[#e2e8f0] py-16">
+        <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-10">
+          <h2 className="text-3xl font-bold font-montserrat text-[#1e293b] mb-8">
+            Scoring Admin
+          </h2>
+          {error && (
+            <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-4">
+              Success!
+            </div>
+          )}
+          <div className="flex flex-col md:flex-row gap-8 mb-8 h-[300px]">
+            <div className="flex-1 flex flex-col">
+              <ListEditor
+                title="Web Search"
+                items={listA}
+                setItems={setListA}
+              />
+            </div>
+            <div className="flex-1 flex flex-col">
+              <ListEditor
+                title="Goose Prompt"
+                items={listB}
+                setItems={setListB}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row gap-4">
+            <button
+              onClick={saveChanges}
+              className="flex-1 px-8 py-3 bg-[#3b82f6] hover:bg-[#2563eb] text-white font-semibold rounded-lg transition"
+            >
+              Save & Test
+            </button>
+            <button
+              onClick={runGoose}
+              className="flex-1 px-8 py-3 bg-[#e2e8f0] hover:bg-[#cbd5e1] text-[#1e293b] font-semibold rounded-lg transition"
+            >
+              Only Goose
+            </button>
+          </div>
+        </div>
       </div>
-      <button onClick={saveChanges} style={{ marginTop: 24 }}>
-        Save & Test
-      </button>
-      <button onClick={runGoose} style={{ marginTop: 24 , marginLeft: 100}}>
-        Only Goose
-      </button>
     </div>
   );
 };
