@@ -9,7 +9,10 @@ import SubmitInvoice from "./components/submitInvoice";
 import Dashboard from "./components/dashboard";
 import "./App.css";
 import Header from "./components/header";
+import ReportsPage from "./components/reports";
 import AutoFundingSettings from "./components/autoFunding";
+import FundingInvoices from "./components/fundingInvoices";
+
 const App = () => {
   return (
     <Router>
@@ -18,6 +21,8 @@ const App = () => {
         <Route path="/submit-invoice" element={<SubmitInvoice />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/header" element={<Header />} />
+        <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/funding-invoices" element={<FundingInvoices />} />
         <Route
           path="/auto-funding-settings"
           element={<AutoFundingSettings />}

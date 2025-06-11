@@ -144,7 +144,7 @@ const SubmitInvoice = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8fafc] to-[#e2e8f0]">
-      <Header activePage="dashboard" />
+      <Header activePage="submit-invoice" />
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
