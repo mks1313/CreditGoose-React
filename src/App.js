@@ -10,6 +10,8 @@ import Dashboard from "./components/dashboard";
 import "./App.css";
 import Header from "./components/header";
 import AutoFundingSettings from "./components/autoFunding";
+import Admin from "./components/admin/admin";
+import Scoring from "./components/admin/scoring";
 const App = () => {
   return (
     <Router>
@@ -18,6 +20,8 @@ const App = () => {
         <Route path="/submit-invoice" element={<SubmitInvoice />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/header" element={<Header />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/scoring" element={<Scoring />} />
         <Route
           path="/auto-funding-settings"
           element={<AutoFundingSettings />}
