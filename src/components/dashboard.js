@@ -169,10 +169,39 @@ const InvoiceTable = ({
     return <NoInvoicesMessage />;
   }
 
-  const handleInvoiceSelect = (invoice) => {
-    setSelectedInvoice(invoice);
+ const handleInvoiceSelect = async (invoice) => {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/invoices/fund/${invoice.id}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.status === "rejected") {
+      setSelectedInvoice({
+        ...invoice,
+        rejectionReason: data.message,
+        rejected: true
+      });
+      setShowConfirmation(true);
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || "Funding failed");
+    }
+
+    setSelectedInvoice(data.invoice);
     setShowConfirmation(true);
-  };
+  } catch (err) {
+    console.error("Funding error:", err);
+    alert(`Error: ${err.message}`);
+  }
+};
 
   return (
     <div className="overflow-x-auto">
@@ -307,31 +336,51 @@ InvoiceRow.propTypes = {
   onViewInvoice: PropTypes.func.isRequired,
 };
 
-const ConfirmationModal = ({ invoice, onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-auto">
-      <div className="text-center">
-        <div className="w-16 h-16 bg-[#059669] rounded-full flex items-center justify-center mx-auto mb-4">
-          <i className="fas fa-check text-white text-2xl"></i>
-        </div>
-        <h3 className="text-2xl font-bold text-[#1e293b] mb-2">
-          Financing Approved!
-        </h3>
-        <p className="text-[#475569] mb-6">
-          Your invoice for {invoice.amount} has been approved for financing at{" "}
-          {invoice.advance_rate}% advance rate.
-        </p>
-        <div className="space-y-4">
-          <button
-            onClick={onClose}
-            className="w-full px-6 py-3 bg-[#3b82f6] text-white rounded-lg hover:bg-[#2563eb] transition duration-300"
+const ConfirmationModal = ({ invoice, onClose }) => {
+  const isRejected = invoice?.rejected;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-auto">
+        <div className="text-center">
+          <div
+            className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+              isRejected ? "bg-red-600" : "bg-[#059669]"
+            }`}
           >
-            Continue
-          </button>
+            <i
+              className={`fas ${
+                isRejected ? "fa-times" : "fa-check"
+              } text-white text-2xl`}
+            ></i>
+          </div>
+          <h3 className="text-2xl font-bold text-[#1e293b] mb-2">
+            {isRejected ? "Financing Rejected" : "Financing Approved!"}
+          </h3>
+          <p className="text-[#475569] mb-6">
+            {isRejected ? (
+              <span>{invoice.rejectionReason}</span>
+            ) : (
+              <span>
+                Your invoice for ${invoice.amount} has been approved for
+                financing at {invoice.advance_rate}% advance rate.
+              </span>
+            )}
+          </p>
+          <div className="space-y-4">
+            <button
+              onClick={onClose}
+              className={`w-full px-6 py-3 ${
+                isRejected ? "bg-red-600 hover:bg-red-700" : "bg-[#3b82f6] hover:bg-[#2563eb]"
+              } text-white rounded-lg transition duration-300`}
+            >
+              Continue
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Dashboard;
