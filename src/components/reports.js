@@ -70,7 +70,6 @@ const ReportsPage = () => {
         setReportData({ ...mockReportData, ...data });
       } catch (err) {
         console.error(err);
-        setError("Failed to load report data. Showing mock data.");
         setReportData(mockReportData); // fallback to mock data
       } finally {
         setLoading(false);
@@ -141,23 +140,6 @@ const ReportsPage = () => {
                     <i className={`fas ${icon} text-[#3b82f6]`}></i>
                   </div>
                   <p className="text-3xl font-bold text-[#1e293b]">{value}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              {[
-                { title: "Monthly Funding Trend", icon: "fa-chart-line" },
-                { title: "Status Distribution", icon: "fa-chart-pie" },
-              ].map(({ title, icon }) => (
-                <div key={title} className="bg-white rounded-xl shadow-lg p-6">
-                  <h3 className="text-xl font-semibold text-[#1e293b] mb-6">
-                    {title}
-                  </h3>
-                  <div className="h-[300px] flex items-center justify-center">
-                    <i className={`fas ${icon} text-6xl text-[#3b82f6]`}></i>
-                  </div>
                 </div>
               ))}
             </div>
