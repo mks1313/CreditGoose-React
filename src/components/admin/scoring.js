@@ -61,6 +61,7 @@ const Scoring = () => {
   const [listB, setListB] = useState([]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/admin/scoring`)
@@ -75,14 +76,16 @@ const Scoring = () => {
   const saveChanges = () => {
     setError(null);
     setSuccess(false);
+    setResponseData(null);
     fetch(`${process.env.REACT_APP_API_URL}/admin/scoring`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ web_searches: listA, goose_prompts: listB }),
     })
       .then((res) => res.json())
-      .then(() => {
+      .then((data) => {
         setSuccess(true);
+        setResponseData(data);
         setTimeout(() => setSuccess(false), 2000);
       })
       .catch(() => setError("Failed to save."));
@@ -90,13 +93,17 @@ const Scoring = () => {
 
   const runGoose = () => {
     setError(null);
+    setResponseData(null);
     fetch(`${process.env.REACT_APP_API_URL}/admin/goose`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ goose_prompts: listB }),
     })
       .then((res) => res.json())
-      .then(() => setSuccess(true))
+      .then((data) => {
+        setSuccess(true);
+        setResponseData(data);
+      })
       .catch(() => setError("Failed to run Goose."));
   };
 
@@ -118,6 +125,14 @@ const Scoring = () => {
               Success!
             </div>
           )}
+          {responseData && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <h4 className="text-lg font-semibold text-blue-800 mb-2">Response:</h4>
+              <pre className="bg-white border border-blue-100 rounded p-3 text-sm text-gray-700 overflow-x-auto whitespace-pre-wrap">
+                {JSON.stringify(responseData, null, 2)}
+              </pre>
+            </div>
+          )}
           <div className="flex flex-col md:flex-row gap-8 mb-8 h-[300px]">
             <div className="flex-1 flex flex-col">
               <ListEditor
@@ -137,13 +152,13 @@ const Scoring = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <button
               onClick={saveChanges}
-              className="flex-1 px-8 py-3 bg-[#3b82f6] hover:bg-[#2563eb] text-white font-semibold rounded-lg transition"
+              className="flex-1 px-8 py-3 bg-[#e2e8f0] hover:bg-[#cbd5e1] text-[#1e293b] font-semibold rounded-lg transition"
             >
               Save & Test
             </button>
             <button
               onClick={runGoose}
-              className="flex-1 px-8 py-3 bg-[#e2e8f0] hover:bg-[#cbd5e1] text-[#1e293b] font-semibold rounded-lg transition"
+              className="flex-1 px-8 py-3 bg-[#3b82f6] hover:bg-[#2563eb] text-white font-semibold rounded-lg transition"
             >
               Only Goose
             </button>

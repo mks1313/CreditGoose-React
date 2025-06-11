@@ -58,7 +58,7 @@ const ReportsPage = () => {
       setLoading(true);
       setError(null);
       try {
-        // TODO: Reports (monthly/quaterly/yearly switch returns mock data) - replace this with your actual API endpoint
+        // TODO: Maxim Reports (monthly/quaterly/yearly switch returns mock data) - replace this with your actual API endpoint
         const response = await fetch("/api/reports", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

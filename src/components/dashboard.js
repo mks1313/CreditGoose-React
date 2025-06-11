@@ -232,6 +232,7 @@ const InvoiceRow = ({
 
     <td className="py-4 px-4">
       <button
+        // TODO: Maxim
         onClick={() => handleInvoiceSelect(invoice)}
         className="w-full mt-4 px-4 py-2 bg-[#3b82f6] text-white rounded-lg hover:bg-[#2563eb] transition duration-300 flex items-center justify-center"
       >

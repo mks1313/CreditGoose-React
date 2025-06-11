@@ -31,7 +31,6 @@ const SubmitInvoice = () => {
     setError(null);
 
     try {
-      // TODO: Maxim
       const response = await fetch(`${process.env.REACT_APP_API_URL}/invoices/submit`, {
         method: "POST",
         headers: {
