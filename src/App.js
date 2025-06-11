@@ -11,8 +11,8 @@ import "./App.css";
 import Header from "./components/header";
 import ReportsPage from "./components/reports";
 import AutoFundingSettings from "./components/autoFunding";
-import FundingInvoices from "./components/fundingInvoices";
-
+import Admin from "./components/admin/admin";
+import Scoring from "./components/admin/scoring";
 const App = () => {
   return (
     <Router>
@@ -22,7 +22,8 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/header" element={<Header />} />
         <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/funding-invoices" element={<FundingInvoices />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/scoring" element={<Scoring />} />
         <Route
           path="/auto-funding-settings"
           element={<AutoFundingSettings />}

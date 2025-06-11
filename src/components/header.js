@@ -6,6 +6,7 @@ const NAV_LINKS = [
   { name: "Home", href: "/" },
   { name: "Dashboard", href: "/dashboard" },
   // { name: "Funding Invoices", href: "/funding-invoices" },
+  { name: "Admin", href: "/admin" },
   { name: "Submit Invoice", href: "/submit-invoice" },
   { name: "Auto Funding", href: "/auto-funding-settings" },
   { name: "Reports", href: "/reports" },
