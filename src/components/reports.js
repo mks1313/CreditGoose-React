@@ -58,16 +58,16 @@ const ReportsPage = () => {
       setLoading(true);
       setError(null);
       try {
-        // TODO: Maxim Reports (monthly/quaterly/yearly switch returns mock data) - replace this with your actual API endpoint
-        const response = await fetch("/api/reports", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/report`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ timeframe }),
+          
         });
 
         if (!response.ok) throw new Error("Failed to fetch report data");
         const data = await response.json();
-        setReportData({ ...mockReportData, ...data });
+        setReportData(data);
       } catch (err) {
         console.error(err);
         setReportData(mockReportData); // fallback to mock data
