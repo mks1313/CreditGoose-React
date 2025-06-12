@@ -345,7 +345,7 @@ const ConfirmationModal = ({ invoice, onClose }) => {
         <div className="text-center">
           <div
             className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-              isRejected ? "bg-red-600" : "bg-[#059669]"
+              isRejected ? "bg-[#f59e0b]" : "bg-[#059669]"
             }`}
           >
             <i
@@ -355,7 +355,7 @@ const ConfirmationModal = ({ invoice, onClose }) => {
             ></i>
           </div>
           <h3 className="text-2xl font-bold text-[#1e293b] mb-2">
-            {isRejected ? "Financing Rejected" : "Financing Approved!"}
+            {isRejected ? "Financing Pending" : "Financing Approved!"}
           </h3>
           <p className="text-[#475569] mb-6">
             {isRejected ? (
