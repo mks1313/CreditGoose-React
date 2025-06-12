@@ -370,9 +370,7 @@ const ConfirmationModal = ({ invoice, onClose }) => {
           <div className="space-y-4">
             <button
               onClick={onClose}
-              className={`w-full px-6 py-3 ${
-                isRejected ? "bg-red-600 hover:bg-red-700" : "bg-[#3b82f6] hover:bg-[#2563eb]"
-              } text-white rounded-lg transition duration-300`}
+              className="w-full px-6 py-3 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded-lg transition duration-300"
             >
               Continue
             </button>
